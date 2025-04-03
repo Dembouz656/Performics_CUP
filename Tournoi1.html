@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performics Cup - Tournoi de Football</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #737372;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        header img {
+            height: 50px; 
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        section {
+            padding: 2rem;
+            margin: 1rem;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #000000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            border: 1px solid #929593;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #e45801;
+            color: white;
+        }
+
+        form {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color:#e45801;
+            color: white;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="c:\xampp\htdocs\monsite\Performics.jpeg" alt="Logo Performics"> 
+        <h1>Performics Cup - Tournoi de Football</h1>
+    </header>
+
+    <section id="pools">
+        <h2>Poules du tournoi</h2>
+
+        <div id="poolA">
+            <h3>Poule A (4 équipes)</h3>
+            <table id="calendarA">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Résultat</th>
+                    </tr>
+                </thead>
+                <tbody id="match-listA"></tbody>
+            </table>
+            <h4>Classement Poule A</h4>
+            <table id="rankingA">
+                <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>Points</th>
+                        <th>Buts marqués</th>
+                        <th>Buts encaissés</th>
+                        <th>Différence de buts</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-listA"></tbody>
+            </table>
+        </div>
+
+        <div id="poolB">
+            <h3>Poule B (3 équipes)</h3>
+            <table id="calendarB">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Résultat</th>
+                    </tr>
+                </thead>
+                <tbody id="match-listB"></tbody>
+            </table>
+            <h4>Classement Poule B</h4>
+            <table id="rankingB">
+                <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>Points</th>
+                        <th>Buts marqués</th>
+                        <th>Buts encaissés</th>
+                        <th>Différence de buts</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-listB"></tbody>
+            </table>
+        </div>
+
+        <div id="poolC">
+            <h3>Poule C (3 équipes)</h3>
+            <table id="calendarC">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Résultat</th>
+                    </tr>
+                </thead>
+                <tbody id="match-listC"></tbody>
+            </table>
+            <h4>Classement Poule C</h4>
+            <table id="rankingC">
+                <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>Points</th>
+                        <th>Buts marqués</th>
+                        <th>Buts encaissés</th>
+                        <th>Différence de buts</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-listC"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="result-form">
+        <h2>Entrer les résultats</h2>
+        <form id="result-form">
+            <label for="pool">Choisir la poule :</label>
+            <select id="pool">
+                <option value="A">Poule A</option>
+                <option value="B">Poule B</option>
+                <option value="C">Poule C</option>
+            </select>
+
+            <label for="team1">Équipe 1 :</label>
+            <input type="text" id="team1" required>
+
+            <label for="team2">Équipe 2 :</label>
+            <input type="text" id="team2" required>
+
+            <label for="score1">Score Équipe 1 :</label>
+            <input type="number" id="score1" required>
+
+            <label for="score2">Score Équipe 2 :</label>
+            <input type="number" id="score2" required>
+
+            <button type="submit">Enregistrer le résultat</button>
+        </form>
+    </section>
+
+    <script>
+        // Initialisation des poules
+        const pools = {
+            A: ["Équipe A1", "Équipe A2", "Équipe A3", "Équipe A4"],
+            B: ["Équipe B1", "Équipe B2", "Équipe B3"],
+            C: ["Équipe C1", "Équipe C2", "Équipe C3"]
+        };
+
+        // Récupérer les données sauvegardées dans le localStorage ou initialiser une structure vide
+        let standings = JSON.parse(localStorage.getItem('standings')) || {
+            A: {},
+            B: {},
+            C: {}
+        };
+
+        // Initialisation des standings avec les équipes
+        function initializeStandings() {
+            Object.keys(pools).forEach(pool => {
+                pools[pool].forEach(team => {
+                    if (!standings[pool][team]) {
+                        standings[pool][team] = {
+                            points: 0,
+                            goalsFor: 0,
+                            goalsAgainst: 0,
+                            goalDifference: 0,
+                            headToHead: {}
+                        };
+                    }
+                });
+            });
+        }
+
+        // Générer les matchs pour une poule donnée
+        function generateMatches(pool) {
+            let matches = [];
+            const teams = pools[pool];
+            for (let i = 0; i < teams.length; i++) {
+                for (let j = i + 1; j < teams.length; j++) {
+                    matches.push([teams[i], teams[j]]);
+                }
+            }
+            return matches;
+        }
+
+        // Affichage des matchs sur la page
+        function displayMatches(pool) {
+            const matches = generateMatches(pool);
+            const matchList = document.getElementById(`match-list${pool}`);
+            matchList.innerHTML = "";
+            matches.forEach(match => {
+                let row = document.createElement("tr");
+                row.innerHTML = `<td>${match[0]} vs ${match[1]}</td><td>Non joué</td>`;
+                matchList.appendChild(row);
+            });
+        }
+
+        // Mise à jour du classement pour une poule donnée
+        function updateStandings(pool) {
+            let rankingList = document.getElementById(`ranking-list${pool}`);
+            rankingList.innerHTML = "";
+
+            let sortedTeams = Object.entries(standings[pool]).sort((a, b) => {
+                const [team1, stats1] = a;
+                const [team2, stats2] = b;
+
+                if (stats1.points !== stats2.points) {
+                    return stats2.points - stats1.points;
+                }
+
+                if (stats1.goalDifference !== stats2.goalDifference) {
+                    return stats2.goalDifference - stats1.goalDifference;
+                }
+
+                if (stats1.goalsFor !== stats2.goalsFor) {
+                    return stats2.goalsFor - stats1.goalsFor;
+                }
+
+                const headToHead1 = stats1.headToHead[team2] || 0;
+                const headToHead2 = stats2.headToHead[team1] || 0;
+                return headToHead2 - headToHead1;
+            });
+
+            sortedTeams.forEach(([team, stats]) => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${team}</td>
+                    <td>${stats.points}</td>
+                    <td>${stats.goalsFor}</td>
+                    <td>${stats.goalsAgainst}</td>
+                    <td>${stats.goalDifference}</td>
+                `;
+                rankingList.appendChild(row);
+            });
+        }
+
+        // Fonction pour gérer l'entrée des résultats
+        function handleResult(event) {
+            event.preventDefault();
+
+            const pool = document.getElementById("pool").value;
+            const team1 = document.getElementById("team1").value;
+            const team2 = document.getElementById("team2").value;
+            const score1 = parseInt(document.getElementById("score1").value);
+            const score2 = parseInt(document.getElementById("score2").value);
+
+            standings[pool][team1].goalsFor += score1;
+            standings[pool][team1].goalsAgainst += score2;
+            standings[pool][team2].goalsFor += score2;
+            standings[pool][team2].goalsAgainst += score1;
+
+            if (score1 > score2) {
+                standings[pool][team1].points += 3;
+            } else if (score2 > score1) {
+                standings[pool][team2].points += 3;
+            } else {
+                standings[pool][team1].points += 1;
+                standings[pool][team2].points += 1;
+            }
+
+            standings[pool][team1].goalDifference = standings[pool][team1].goalsFor - standings[pool][team1].goalsAgainst;
+            standings[pool][team2].goalDifference = standings[pool][team2].goalsFor - standings[pool][team2].goalsAgainst;
+
+            if (!standings[pool][team1].headToHead) standings[pool][team1].headToHead = {};
+            if (!standings[pool][team2].headToHead) standings[pool][team2].headToHead = {};
+
+            if (score1 > score2) {
+                standings[pool][team1].headToHead[team2] = 1;
+                standings[pool][team2].headToHead[team1] = 0;
+            } else if (score2 > score1) {
+                standings[pool][team2].headToHead[team1] = 1;
+                standings[pool][team1].headToHead[team2] = 0;
+            } else {
+                standings[pool][team1].headToHead[team2] = 0.5;
+                standings[pool][team2].headToHead[team1] = 0.5;
+            }
+
+            // Sauvegarde dans le localStorage
+            localStorage.setItem('standings', JSON.stringify(standings));
+
+            displayMatches(pool);
+            updateStandings(pool);
+
+            document.getElementById("result-form").reset();
+        }
+
+        // Initialisation et affichage
+        initializeStandings();
+        displayMatches('A');
+        displayMatches('B');
+        displayMatches('C');
+        updateStandings('A');
+        updateStandings('B');
+        updateStandings('C');
+
+        // Ajouter l'événement pour la soumission du formulaire
+        document.getElementById("result-form").addEventListener("submit", handleResult);
+    </script>
+
+</body>
+</html>
